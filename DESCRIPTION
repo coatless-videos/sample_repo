@@ -5,6 +5,6 @@ Version: 0.0.1
 Date: 2025-02-20
 Authors@R: person("Dirk", "Eddelbuettel", role = c("aut", "cre"), email = "edd@debian.org")
 Description: More about what it does (maybe more than one line).
-URL: https://github.com/eddelbuettel/samplepackage
-BugReports: https://github.com/eddelbuettel/samplepackage/issues
+URL: https://codeberg.org/eddelbuettel/sample_repo
+BugReports: https://codeberg.org/eddelbuettel/sample_repo/issues
 License: GPL (>= 2)
