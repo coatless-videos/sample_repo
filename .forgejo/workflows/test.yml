@@ -5,6 +5,6 @@ name: minimal
 on: [push]
 jobs:
   test:
-    runs-on: docker
+    runs-on: rocker/r-base
     steps:
       - run: echo All Good
