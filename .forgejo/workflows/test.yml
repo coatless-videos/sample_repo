@@ -1,0 +1,10 @@
+## cf https://code.forgejo.org/forgejo/end-to-end/src/branch/main/actions/example-echo/.forgejo/workflows/test.yml
+
+name: minimal
+
+on: [push]
+jobs:
+  test:
+    runs-on: docker
+    steps:
+      - run: echo All Good
