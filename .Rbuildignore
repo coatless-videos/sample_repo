@@ -2,3 +2,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
+^\.woodpecker
+^\.forgejo
+^LICENSE

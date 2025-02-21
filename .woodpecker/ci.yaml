@@ -1,4 +1,5 @@
 # Run CI for R using https://eddelbuettel.github.io/r-ci/
+# Actually using simpler rocker/r2u:noble container
 
 when:
   - event: [manual, push, pull_request]
@@ -8,36 +9,36 @@ variables:
     _R_CHECK_FORCE_SUGGESTS_: "false"
 
 matrix:
-  IMAGE:
+  container:
     - rocker/r2u:noble
 
 steps:
   - name: Setup
-    image: ${IMAGE}
+    image: ${container}
     pull: true
     environment:
       <<: *env
-    commands: 
-      - apt update -qq && apt install --yes --no-install-recommends curl
-      - curl -OLs https://eddelbuettel.github.io/r-ci/run.sh && chmod 0755 run.sh
-      - ./run.sh bootstrap
+    commands:
+      - echo "Nothing to here"
 
   - name: Dependencies
-    image: ${IMAGE}
+    image: ${container}
     depends_on: [Setup]
     environment:
       <<: *env
     commands:
-      - ./run.sh install_all
+      - installDeps.r 
 
   - name: Test
-    image: ${IMAGE}
+    image: ${container}
     depends_on: [Dependencies]
     environment:
       <<: *env
     commands:
-      - ./run.sh run_tests
-
+      - install.r rcmdcheck
+      - /usr/lib/R/site-library/littler/examples/rcc.r --fast --as-cran
+      # TODO: link this into /usr/local/bin for r2u
+      
   #- name: Logs
   #  commands: 
   #    - ./run.sh dump_logs
