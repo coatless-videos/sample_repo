@@ -1,42 +1,50 @@
 # Run CI for R using https://eddelbuettel.github.io/r-ci/
 
-name: ci
+when:
+  - event: [manual, push, pull_request]
 
-on:
-  push:
-  pull_request:
+variables:
+  env: &env
+    _R_CHECK_FORCE_SUGGESTS_: "false"
 
-env:
-  _R_CHECK_FORCE_SUGGESTS_: "false"
+matrix:
+  IMAGE:
+    - rocker/r2u:noble
 
-jobs:
-  ci:
-    strategy:
-      matrix:
-        include:
-          #- {os: macOS-latest}
-          - {os: rocker/r2u:noble}
+steps:
+  - name: Setup
+    image: ${IMAGE}
+    pull: true
+    environment:
+      <<: *env
+    commands: 
+      - apt update -qq && apt install --yes --no-install-recommends curl
+      - curl -OLs https://eddelbuettel.github.io/r-ci/run.sh && chmod 0755 run.sh
+      - ./run.sh bootstrap
 
-    runs-on: ${{ matrix.os }}
+  - name: Dependencies
+    image: ${IMAGE}
+    depends_on: [Setup]
+    environment:
+      <<: *env
+    commands:
+      - ./run.sh install_all
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  - name: Test
+    image: ${IMAGE}
+    depends_on: [Dependencies]
+    environment:
+      <<: *env
+    commands:
+      - ./run.sh run_tests
 
-      - name: Setup
-        uses: eddelbuettel/github-actions/r-ci@master
-
-      - name: Dependencies
-        run: ./run.sh install_all
-
-      - name: Test
-        run: ./run.sh run_tests
-
-      #- name: Logs
-      #  run: ./run.sh dump_logs
-      #  if: failure()
-        
-      #- name: Coverage
-      #  if: ${{ matrix.os == 'ubuntu-latest' }}
-      #  run: ./run.sh coverage
-        
+  #- name: Logs
+  #  commands: 
+  #    - ./run.sh dump_logs
+    
+  #- name: Coverage
+  #  when:
+  #    - evaluate: IMAGE == 'ubuntu-latest'
+  #  commands:
+  #    - ./run.sh coverage
+    
