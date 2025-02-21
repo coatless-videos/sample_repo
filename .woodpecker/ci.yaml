@@ -19,9 +19,9 @@ steps:
     environment:
       <<: *env
     commands:
-      - installDeps.r 
-      - install.r rcmdcheck
-      - /usr/lib/R/site-library/littler/examples/rcc.r --fast --as-cran
-      # TODO: link this into /usr/local/bin for r2u
+      # use dependencies=TRUE for Suggests as well
+      - Rscript -e 'remotes::install_deps(".", dependencies=NA)' 
+      - R CMD build --no-manual --no-build-vignettes .
+      - R CMD check --as-cran --no-manual --no-vignettes $(ls -1 *.tar.gz | head -1)
       
     
