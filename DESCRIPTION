@@ -8,3 +8,5 @@ Description: More about what it does (maybe more than one line).
 URL: https://codeberg.org/eddelbuettel/sample_repo
 BugReports: https://codeberg.org/eddelbuettel/sample_repo/issues
 License: GPL (>= 2)
+Imports: Rcpp
+LinkingTo: Rcpp, RcppArmadillo
