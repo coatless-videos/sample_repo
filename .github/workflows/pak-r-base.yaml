@@ -1,0 +1,32 @@
+# Run R CMD check in rocker/r-base with pak, with the commands of the Codeberg-CI example for R
+# https://codeberg.org/Codeberg-CI/examples/src/branch/main/R
+
+name: pak-r-base
+
+on:
+  push:
+    branches: [pkg-plain, pkg-tidyverse, pkg-compiled]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    container:
+      image: rocker/r-base
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: pak
+        run: R -q -s -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+
+      - name: Dependencies
+        run: R -q -e 'options(Ncpus = 4); pak::pak()'
+
+      - name: Build
+        run: R CMD build --no-manual --no-build-vignettes .
+
+      - name: Check
+        run: R CMD check --as-cran --no-manual --no-vignettes *.tar.gz
