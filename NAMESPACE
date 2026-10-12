@@ -1,3 +1,5 @@
 ## export all regularly named functions
 ## (but allow for private functions whose name starts with a dot).name <- function(...)
 exportPattern("^[[:alpha:]]+")
+importFrom(dplyr, group_by, summarise)
+importFrom(ggplot2, ggplot, aes, geom_col, labs, .data)
